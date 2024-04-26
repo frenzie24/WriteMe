@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/frenzie24/WriteMe#readme",
   "dependencies": {
+    "@inquirer/editor": "^2.1.5",
     "colors": "^1.4.0",
+    "external-editor": "^3.1.0",
     "inquirer": "^8.2.4",
     "jquery": "^3.7.1"
   }
