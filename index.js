@@ -76,20 +76,10 @@ const nl = `<br>`;
 
 
 // format content into markup and return
-let formatContent = (contentLines) => {
-    let content = '';
-    console.log(contentLines)
-    for (let i = 0; i < contentLines.length; i++) {
-        let lineString = JSON.stringify(contentLines[i]);
-        // using string literals we can refractor the contentLines array 
-        content = `${content}${lineString}${nl}`
-    }
 
-    return content;
-}
 
 //create table of contents from array of sections
-let createContents = (sections) => {
+const createContents = (sections) => {
     let contents = ``
     sections.foreach(section => {
         let sectionString = `[${section.heading}](${section.heading.replaceAll(" ", "-")})${nl}`;
@@ -103,33 +93,38 @@ let emailPrompt = {
     message: "Please enter your email address"
 };
 
-let projectPrompt = {
+//
+const confirmAnswerValidator = (type) => {
+
+}
+
+const projectPrompt = {
     type: "editor",
     name: "projectName",
     message: "What's the name of your project?",
     validtate: (err) => { console.log('error validating editor') }
 };
 
-let descriptionPrompt = {
+const descriptionPrompt = {
     type: "input",
     name: "descripton",
     message: "Please decrible your project",
 }
 
-let formatSection = (section) => {
+const formatSection = aysnc(section) => {
     return `#${section.heading}${nl}${section.content}`;
 
 }
 
 //first function called to begin taking user input to create README
 async function startPrompt() {
-    let README = {
+    const README = {
         project: "",
         sections: [],
         formattedData: ''
     };
 
-    let prompts = [projectPrompt, descriptionPrompt, installPrompt,
+    const questions = [projectPrompt, descriptionPrompt, installPrompt,
         usagePrompt,
         licensePrompt,
         contributingPrompt,
@@ -141,11 +136,14 @@ async function startPrompt() {
     // object to store readme data while we prep it for storing
 
     //
-   
 
-    await inquirer.prompt(prompts).then(response => {
+    // get user input as response object from questions[]
+    await inquirer.prompt(questions).then(response => {
+        // we need a strink to hold our markup as it's formatted
         let markupString = '';
+        // a dedicated variable
         let badge = badges[response.license.indexOf(choices.find((choice) => choice == response.license))];
+        // the first entry in the answers array is the project heading
         let answers = [
             { heading: response.projectName.toUpperCase(), content: response.description },
             { heading: "INSTALLATION", content: response.install },
@@ -158,27 +156,18 @@ async function startPrompt() {
         ]
         console.log(answers);
         answers.forEach(answer => {
-            // formatSection takes an answer object and creates a string literal to serve as the entire heading and content of a section
+            /* 
+                formatSection takes an answer object and creates a string literal to serve as the entire heading and content of a section
+                the result is appended to markupString using string literals
+            */
             markupString = `${markupString}${formatSection(answer)}`
         })
         // f
-        markupString =`${badge}${markupString}`;
+        markupString = `${badge}${markupString}`;
         console.log(markupString);
 
 
     })
-
-    /*let rdme = { project: response.name };
-    let sections = [];
-    // README.sections.push({ heading: `${response.heading} Description`, content: response.description });
-
-    if (response.incomplete) {
-        sections = generateSection();
-        console.log
-    }
-    debugger;*/
-
-
 
 }
 
