@@ -72,12 +72,12 @@ const nl = `<br>`;
 
 
 //create table of contents from array of sections
-const createContents = (sections) => {
+const createTableOfContents = (sections) => {
     let contents = ``
-    sections.foreach(section => {
+    sections.forEach(section => {
         let sectionString = `[${section.heading}](${section.heading.replaceAll(" ", "-")})${nl}`;
         //append section string to contents
-        contents = `${contents}${sectionString}`
+        contents = `- ${contents}${sectionString}`
     })
     return contents;
 }
@@ -96,18 +96,18 @@ const projectPrompt = {
     type: "input",
     name: "projectName",
     message: "What's the name of your project?",
-   
+
 };
 
 const descriptionPrompt = {
     type: "editor",
-    name: "descripton",
+    name: "description",
     message: "Please decrible your project",
 };
 
 // returns formatted section string literal of #HEADING<br>CONTENT
 const formatSection = (section) => {
-    return  `#${section.heading}${nl}${section.content}`;
+    return `##${section.heading}${nl}${section.content}`;
 
 }
 
@@ -124,7 +124,6 @@ async function startPrompt() {
         licensePrompt,
         contributingPrompt,
         testPrompt,
-        questionsPrompot,
         githubPrompt,
         emailPrompt,
     ];
@@ -136,20 +135,24 @@ async function startPrompt() {
     await inquirer.prompt(questions).then(answers => {
         // we need a strink to hold our markup as it's formatted
         let markupString = '';
-        // a dedicated variable
-        let badge = badges[answers.license.indexOf(choices.find((choice) => choice == answers.license))];
-        // the first entry in the answers array is the project heading
-        let sections = [
-            { heading: answers.projectName.toUpperCase(), content: answers.description },
+        // a dedicated variable for the markup to display the badge of the user's chosen license
+        const badge = badges[answers.license.indexOf(choices.find((choice) => choice == answers.license))];
+        // we need to store our projectName, it is not formatted the same as sections and has no content
+        const projectName = `# ${answers.projectName}${nl}`
+        // an array of all section objs containing heading and their content
+        const sections = [
+            { heading: "DESCRIPTION", content: answers.description },
             { heading: "INSTALLATION", content: answers.install },
             { heading: "USAGE", content: answers.usage },
             { heading: "LICENSE", content: answers.license },
             { heading: "CONTRIBUTING GUIDELINES", content: answers.contributing },
             { heading: "TEST INSTRUCTIONS", content: answers.tests },
             { heading: "GITHUB", content: answers.github },
-            { heading: "EMAIL", content: answers.email }
+            { heading: "QUESTIONS? ASK ME!", content: `I can be reached by email @:<br>${answers.email}` }
         ]
         console.log(sections);
+        console.log("decription", answers.description)
+        let contentsString = createTableOfContents(sections);
         sections.forEach(section => {
             /* 
                 formatSection takes an answer object and creates a string literal to serve as the entire heading and content of a section
@@ -157,10 +160,12 @@ async function startPrompt() {
             */
             markupString = `${markupString}${formatSection(section)}`
         })
-        // f
-        markupString = `${badge}${markupString}`;
+        // using string literals, add the badge string, create the table of contents
+        markupString = `${badge}${projectName}${contentsString}${markupString}`;
         console.log(markupString);
-
+        fs.writeFile(`_README.md`, markupString, (err) => {
+            err ? console.error(err) : console.log('README created!')
+        })
 
     })
 
