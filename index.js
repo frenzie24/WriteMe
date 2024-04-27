@@ -32,7 +32,7 @@ const questions = [
             return input.trim();
         }
     },
-
+/*
     {//  descriptionPrompt  
         type: "editor",
         name: "description",
@@ -132,6 +132,7 @@ const questions = [
         }
 
     },
+    */
 ]
 
 // in README markups two empty characters ('  ') at the end of the line indicates a new line
@@ -163,7 +164,7 @@ const confirmAnswerValidator = (type) => {
 
 
 
-// returns formatted section string literal of #HEADING<br>CONTENT
+// returns formatted section string literal 
 const formatSection = (section) => {
     return `## ${section.heading}${nl}${section.content}${nl}`;
 
@@ -210,7 +211,8 @@ async function startPrompt() {
             markupString = `${markupString}${formatSection(section)}`
         })
         // using string literals, add the badge string, create the table of contents
-        markupString = `${badge}${nl}${projectName}${nl}# Contents${contentsString}${nl}${markupString}`;
+
+        markupString = `${badge}${nl}${projectName}${nl}## Contents${contentsString}${nl}${markupString}`;
         console.log(markupString);
         fs.writeFile(`_README.md`, markupString, (err) => {
             err ? console.error(err) : console.log('README created!')
