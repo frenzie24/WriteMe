@@ -44,22 +44,17 @@ const licensePrompt = {
 }
 
 const contributingPrompt = {
-    type: 'input',
+    type: 'editor',
     name: 'contributing',
     message: 'Please list contribution guidelines',
 }
 
 const testPrompt = {
-    type: "input",
+    type: "editor",
     name: "tests",
     message: 'Please list any tests',
 }
 
-const questionsPrompot = {
-    type: "input",
-    name: "questions",
-    message: 'Please list any common questions may be answered.'
-}
 const githubPrompt = {
     type: "input",
     name: "github",
@@ -73,8 +68,6 @@ const githubPrompt = {
 const nl = `<br>`;
 
 // pass data obj which contains the heading as a string and the content as an array of strings
-
-
 // format content into markup and return
 
 
@@ -83,11 +76,12 @@ const createContents = (sections) => {
     let contents = ``
     sections.foreach(section => {
         let sectionString = `[${section.heading}](${section.heading.replaceAll(" ", "-")})${nl}`;
+        //append section string to contents
         contents = `${contents}${sectionString}`
     })
     return contents;
 }
-let emailPrompt = {
+const emailPrompt = {
     type: "input",
     name: "email",
     message: "Please enter your email address"
@@ -99,20 +93,21 @@ const confirmAnswerValidator = (type) => {
 }
 
 const projectPrompt = {
-    type: "editor",
+    type: "input",
     name: "projectName",
     message: "What's the name of your project?",
-    validtate: (err) => { console.log('error validating editor') }
+   
 };
 
 const descriptionPrompt = {
-    type: "input",
+    type: "editor",
     name: "descripton",
     message: "Please decrible your project",
-}
+};
 
-const formatSection = aysnc(section) => {
-    return `#${section.heading}${nl}${section.content}`;
+// returns formatted section string literal of #HEADING<br>CONTENT
+const formatSection = (section) => {
+    return  `#${section.heading}${nl}${section.content}`;
 
 }
 
@@ -137,30 +132,30 @@ async function startPrompt() {
 
     //
 
-    // get user input as response object from questions[]
-    await inquirer.prompt(questions).then(response => {
+    // get user input as answers object from questions[]
+    await inquirer.prompt(questions).then(answers => {
         // we need a strink to hold our markup as it's formatted
         let markupString = '';
         // a dedicated variable
-        let badge = badges[response.license.indexOf(choices.find((choice) => choice == response.license))];
+        let badge = badges[answers.license.indexOf(choices.find((choice) => choice == answers.license))];
         // the first entry in the answers array is the project heading
-        let answers = [
-            { heading: response.projectName.toUpperCase(), content: response.description },
-            { heading: "INSTALLATION", content: response.install },
-            { heading: "USAGE", content: response.usage },
-            { heading: "LICENSE", content: response.license },
-            { heading: "CONTRIBUTING GUIDELINES", content: response.contributing },
-            { heading: "TEST INSTRUCTIONS", content: response.tests },
-            { heading: "GITHUB", content: response.github },
-            { heading: "EMAIL", content: response.email }
+        let sections = [
+            { heading: answers.projectName.toUpperCase(), content: answers.description },
+            { heading: "INSTALLATION", content: answers.install },
+            { heading: "USAGE", content: answers.usage },
+            { heading: "LICENSE", content: answers.license },
+            { heading: "CONTRIBUTING GUIDELINES", content: answers.contributing },
+            { heading: "TEST INSTRUCTIONS", content: answers.tests },
+            { heading: "GITHUB", content: answers.github },
+            { heading: "EMAIL", content: answers.email }
         ]
-        console.log(answers);
-        answers.forEach(answer => {
+        console.log(sections);
+        sections.forEach(section => {
             /* 
                 formatSection takes an answer object and creates a string literal to serve as the entire heading and content of a section
                 the result is appended to markupString using string literals
             */
-            markupString = `${markupString}${formatSection(answer)}`
+            markupString = `${markupString}${formatSection(section)}`
         })
         // f
         markupString = `${badge}${markupString}`;
@@ -170,54 +165,4 @@ async function startPrompt() {
     })
 
 }
-
-async function generateSection(sections) {
-    let sectionPrompt = [{
-        type: 'input',
-        name: 'heading',
-        message: "Please enter the heading name for this section"
-    }, contentPrompt, {
-        type: 'confirm',
-        name: 'addSections',
-        message: 'Would you like to add more sections?'
-    }]
-
-
-    // content is an arrary of prompt responses that will be formatted in formatContent(commentLines)
-    if (!sections) {
-        sections = [];
-    }
-    const response = await inquirer.prompt(sectionPrompt);
-    const heading = response.heading;
-    const content = [`${response.content}${nl}`];
-    const section = { heading, content };
-    sections.push(section);
-    console.log(response)
-    if (response.addSections) {
-        return generateSection(sections);
-    } else {
-        console.log('Returning sections:');
-        console.log(sections);
-        return sections;
-    }
-}
-
-
-
-//function will call itself if the user wants multiple lines in their content section
-async function addContent(content, prompt) {
-
-    console.log(colors.blue('addContent called'))
-
-    return await inquirer.prompt([prompt]).then(response => {
-        content.push(response.content);
-        return content;
-    });
-
-}
-
-function parseContent(content) {
-
-}
-
 startPrompt();
