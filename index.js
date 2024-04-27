@@ -65,7 +65,8 @@ const githubPrompt = {
 // in README markups two empty characters ('  ') at the end of the line indicates a new line
 // <br> can also be used in case the README view does not support ('  ') as a new line escape
 //const nl = '  ';
-const nl = `<br>`;
+const nl = `
+`;
 
 // pass data obj which contains the heading as a string and the content as an array of strings
 // format content into markup and return
@@ -161,7 +162,7 @@ async function startPrompt() {
             markupString = `${markupString}${formatSection(section)}`
         })
         // using string literals, add the badge string, create the table of contents
-        markupString = `${badge}${projectName}${contentsString}${markupString}`;
+        markupString = `${badge}${nl}${projectName}${nl}# Cotents${contentsString}${nl}${markupString}`;
         console.log(markupString);
         fs.writeFile(`_README.md`, markupString, (err) => {
             err ? console.error(err) : console.log('README created!')
