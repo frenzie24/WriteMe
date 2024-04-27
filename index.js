@@ -12,55 +12,64 @@ const badges = [`[![License](https://img.shields.io/badge/License-Apache_2.0-blu
 
 const choices = ['apache', 'boost', 'bsd3', 'bsd2', 'creative commons 0', 'MIT'];
 
-const addContentPrompt = {
-    type: "confirm",
-    name: "incomplete",
-    message: "Add more lines to this content section?",
-}
 
-const contentPrompt = {
+
+const questions = [
+   {//  projectPrompt  
     type: "input",
-    name: "content",
-    message: `Compose your content for this section`
-}
+    name: "projectName",
+    message: "What's the name of your project?",
 
-const installPrompt = {
-    type: 'input',
-    name: 'install',
-    message: 'Please list any installation steps'
-};
+},
 
-const usagePrompt = {
-    type: 'input',
-    name: 'usage',
-    message: 'What is your projects intended usage?',
-}
-
-const licensePrompt = {
-    type: 'list',
-    name: 'license',
-    message: 'Please select the license you will be using for this project',
-    choices: choices,
-}
-
-const contributingPrompt = {
-    type: 'editor',
-    name: 'contributing',
-    message: 'Please list contribution guidelines',
-}
-
-const testPrompt = {
+{//  descriptionPrompt  
     type: "editor",
-    name: "tests",
-    message: 'Please list any tests',
-}
-
-const githubPrompt = {
-    type: "input",
-    name: "github",
-    message: 'Please provide your github username.'
-}
-
+    name: "description",
+    message: "Please decrible your project",
+},
+     {//installPrompt  
+       type: 'input',
+       name: 'install',
+       message: 'Please list any installation steps'
+   },
+   
+    {// usagePrompt  
+       type: 'input',
+       name: 'usage',
+       message: 'What is your projects intended usage?',
+   },
+   
+    {// licensePrompt  
+       type: 'list',
+       name: 'license',
+       message: 'Please select the license you will be using for this project',
+       choices: choices,
+   },
+   
+    {// contributingPrompt  
+       type: 'editor',
+       name: 'contributing',
+       message: 'Please list contribution guidelines',
+   },
+   
+   {// testPrompt  
+       type: "editor",
+       name: "tests",
+       message: 'Please list any tests',
+   },
+   
+   {//  githubPrompt  
+       type: "input",
+       name: "github",
+       message: 'Please provide your github username.'
+   },
+   
+   {//  emailPrompt  
+       type: "input",
+       name: "email",
+       message: "Please enter your email address"
+   },
+   ]
 
 // in README markups two empty characters ('  ') at the end of the line indicates a new line
 // <br> can also be used in case the README view does not support ('  ') as a new line escape
@@ -76,39 +85,23 @@ const nl = `
 const createTableOfContents = (sections) => {
     let contents = ``
     sections.forEach(section => {
-        let sectionString = `[${section.heading}](${section.heading.replaceAll(" ", "-")})${nl}`;
+        let sectionString = `${nl}[${section.heading}](${section.heading.replaceAll(` `, "-")})${nl}`;
         //append section string to contents
         contents = `- ${contents}${sectionString}`
     })
     return contents;
 }
-const emailPrompt = {
-    type: "input",
-    name: "email",
-    message: "Please enter your email address"
-};
 
 //
 const confirmAnswerValidator = (type) => {
 
 }
 
-const projectPrompt = {
-    type: "input",
-    name: "projectName",
-    message: "What's the name of your project?",
 
-};
-
-const descriptionPrompt = {
-    type: "editor",
-    name: "description",
-    message: "Please decrible your project",
-};
 
 // returns formatted section string literal of #HEADING<br>CONTENT
 const formatSection = (section) => {
-    return `##${section.heading}${nl}${section.content}`;
+    return `## ${section.heading}${nl}${section.content}${nl}`;
 
 }
 
@@ -120,14 +113,6 @@ async function startPrompt() {
         formattedData: ''
     };
 
-    const questions = [projectPrompt, descriptionPrompt, installPrompt,
-        usagePrompt,
-        licensePrompt,
-        contributingPrompt,
-        testPrompt,
-        githubPrompt,
-        emailPrompt,
-    ];
     // object to store readme data while we prep it for storing
 
     //
@@ -162,7 +147,7 @@ async function startPrompt() {
             markupString = `${markupString}${formatSection(section)}`
         })
         // using string literals, add the badge string, create the table of contents
-        markupString = `${badge}${nl}${projectName}${nl}# Cotents${contentsString}${nl}${markupString}`;
+        markupString = `${badge}${nl}${projectName}${nl}# Contents${contentsString}${nl}${markupString}`;
         console.log(markupString);
         fs.writeFile(`_README.md`, markupString, (err) => {
             err ? console.error(err) : console.log('README created!')
