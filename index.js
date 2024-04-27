@@ -11,65 +11,128 @@ const badges = [`[![License](https://img.shields.io/badge/License-Apache_2.0-blu
     `[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)`,];
 
 const choices = ['apache', 'boost', 'bsd3', 'bsd2', 'creative commons 0', 'MIT'];
+const editorWarn = `${colors.brightYellow(` (Choose save when exiting the editor for your content to transfer.) 
+`)}`
+const validateInput = (input) => {
+    if (!input.length) {
+        return 'Input required';
+    }
 
-
+    return true;
+}
 
 const questions = [
-   {//  projectPrompt  
-    type: "input",
-    name: "projectName",
-    message: "What's the name of your project?",
+    {//  projectPrompt  
+        type: "input",
+        name: "projectName",
+        prefix: 'vas is das?',
+        message: "What's the name of your project?",
+        validate: validateInput,
+        filter: (input) => {
+            return input.trim();
+        }
+    },
 
-},
+    {//  descriptionPrompt  
+        type: "editor",
+        name: "description",
+        message: "Please describle your project.",
+        suffix: `${editorWarn}`,
+        validate: validateInput,
+        filter: (input) => {
+            return input.trim();
+        }
 
-{//  descriptionPrompt  
-    type: "editor",
-    name: "description",
-    message: "Please decrible your project",
-},
-     {//installPrompt  
-       type: 'input',
-       name: 'install',
-       message: 'Please list any installation steps'
-   },
-   
+    },
+
+    {//installPrompt  
+        type: 'editor',
+        name: 'install',
+        message: 'Please list any installation instructions.',
+        suffix: `${editorWarn}`,
+        validate: validateInput,
+        filter: (input) => {
+            return input.trim();
+        }
+
+    },
+
     {// usagePrompt  
-       type: 'input',
-       name: 'usage',
-       message: 'What is your projects intended usage?',
-   },
-   
+        type: 'editor',
+        name: 'usage',
+        message: `What is your projects intended usage?`,
+        suffix: `${editorWarn}`,
+        validate: validateInput,
+        filter: (input) => {
+            return input.trim();
+        }
+
+    },
+
     {// licensePrompt  
-       type: 'list',
-       name: 'license',
-       message: 'Please select the license you will be using for this project',
-       choices: choices,
-   },
-   
+        type: 'list',
+        name: 'license',
+        message: 'Please select the license you will be using for this project.',
+
+        choices: choices,
+        validate: validateInput,
+        filter: (input) => {
+            return input.trim();
+        }
+    },
+
     {// contributingPrompt  
-       type: 'editor',
-       name: 'contributing',
-       message: 'Please list contribution guidelines',
-   },
-   
-   {// testPrompt  
-       type: "editor",
-       name: "tests",
-       message: 'Please list any tests',
-   },
-   
-   {//  githubPrompt  
-       type: "input",
-       name: "github",
-       message: 'Please provide your github username.'
-   },
-   
-   {//  emailPrompt  
-       type: "input",
-       name: "email",
-       message: "Please enter your email address"
-   },
-   ]
+        type: 'editor',
+        name: 'contributing',
+        message: 'Please list contribution guidelines.',
+        suffix: `${editorWarn}`,
+        validate: validateInput,
+        filter: (input) => {
+            return input.trim();
+        }
+
+    },
+
+    {// testPrompt  
+        type: "editor",
+        name: "tests",
+        message: 'Please list any tests.',
+        suffix: `${editorWarn}`,
+        validate: validateInput,
+        filter: (input) => {
+            return input.trim();
+        }
+
+    },
+
+    {//  githubPrompt  
+        type: "input",
+        name: "github",
+        message: 'Please provide your github username.',
+        validate: validateInput,
+        filter: (input) => {
+            return input.trim();
+        }
+
+    },
+
+    {//  emailPrompt  
+        type: "input",
+        name: "email",
+        message: "Please enter your email address.",
+        validate: (email) => {
+            // regex expression to check for valid email formatting.  Sourced from all over google
+            let regex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+            if (!regex.test(email)) return "Inavlid email."
+
+            return true;
+        },
+        filter: (input) => {
+            return input.trim();
+        }
+
+    },
+]
 
 // in README markups two empty characters ('  ') at the end of the line indicates a new line
 // <br> can also be used in case the README view does not support ('  ') as a new line escape
@@ -85,8 +148,9 @@ const nl = `
 const createTableOfContents = (sections) => {
     let contents = ``
     sections.forEach(section => {
-        let sectionString = `${nl}[${section.heading}](${section.heading.replaceAll(` `, "-")})${nl}`;
-        //append section string to contents
+        let headingLink = section.heading.replaceAll(' ', "-");
+        let sectionString = `${nl}[${section.heading}](#${headingLink})${nl}`;
+        console.log("sectionsString:", sectionString)//append section string to contents
         contents = `- ${contents}${sectionString}`
     })
     return contents;
@@ -130,14 +194,13 @@ async function startPrompt() {
             { heading: "DESCRIPTION", content: answers.description },
             { heading: "INSTALLATION", content: answers.install },
             { heading: "USAGE", content: answers.usage },
-            { heading: "LICENSE", content: answers.license },
+            { heading: "LICENSE", content: `This project uses the ${answers.license} license` },
             { heading: "CONTRIBUTING GUIDELINES", content: answers.contributing },
-            { heading: "TEST INSTRUCTIONS", content: answers.tests },
-            { heading: "GITHUB", content: answers.github },
-            { heading: "QUESTIONS? ASK ME!", content: `I can be reached by email @:<br>${answers.email}` }
+            { heading: "TEST INSTRUCTIONS", content: `\`\`\`${nl}${answers.tests}${nl}\`\`\`` },
+            { heading: "GITHUB", content: `https://github.com/${answers.github}` },
+            { heading: "QUESTIONS", content: `I can be reached by email:${nl}${answers.email}` }
         ]
-        console.log(sections);
-        console.log("decription", answers.description)
+      
         let contentsString = createTableOfContents(sections);
         sections.forEach(section => {
             /* 
