@@ -164,7 +164,7 @@ async function startPrompt() {
         // we need a strink to hold our markup as it's formatted
         let markupString = '';
         // a dedicated variable for the markup to display the badge of the user's chosen license
-        const badge = badges[answers.license.indexOf(choices.find((choice) => choice == answers.license))];
+        const badge = badges[answers.license.indexOf(badgeChoices.find((choice) => choice == answers.license))];
         // we need to store our projectName, it is not formatted the same as sections and has no content
         const projectName = `# ${answers.projectName}${nl}`
         // an array of all section objs containing heading and their content
@@ -192,20 +192,21 @@ async function startPrompt() {
         markupString = `${badge}${nl}${projectName}${nl}## Contents${nl}${contentsString}${nl}${markupString}`;
 
         console.log(markupString);
-        console.log(colors.brightGreen(`Your raw README.md data is displayed above.${nl}Please review for a momment.`));
+        logger(markupString, 'white', 'bgGrey')
+        logger(`Your raw README.md data is displayed above.${nl}Please review for a momment.`, `bgBrightGreen`);
         let count = 0;
         let counter = ``
-        setInterval(() => {
-            if (count < 6) {
-                count++;
-                counter = `${counter}.`
-                process.stdout.write(counter)
-            } else {
-                process.stdout.write('');
-                savePrompt(markupString);
-            }
-        }, 500)
-
+        /* setInterval(() => {
+             if (count < 6) {
+                 count++;
+                 counter = `${counter}.`
+                 process.stdout.write(counter)
+             } else {
+                 process.stdout.write('');
+                 return savePrompt(markupString);
+             }
+         }, 500)
+ */
 
     })
 
@@ -235,13 +236,66 @@ const savePrompt = async data => {
 
 };
 
-function logger(log) {
-    if (Arrray.isArray(log)) {
-        log.map(entry => {
-            if (typeof entry === 'object') {
-                console.log(`colors.${entry}
-            }
-        })
+function findColor(msg, color) {
+    switch (color) {
+        case `black`: return colors.black;
+        case `red`: return colors.red;
+        case `green`: return colors.green;
+        case `yellow`: return colors.yellow;
+        case `blue`: return colors.blue;
+        case `magenta`: return colors.magenta;
+        case `cyan`: return colors.cyan;
+        case `white`: return colors.white;
+        case `gray`: return colors.gray;
+        case `grey`: return colors.grey;
+        case `brightRed`: return colors.brightRed;
+        case `brightGreen`: return colors.brightGreen(msg);
+        case `brightYellow`: return colors.brightYellow;
+        case `brightBlue`: return colors.brightBlue;
+        case `brightMagenta`: return colors.brightMagenta;
+        case `brightCyan`: return colors.brightCyan;
+        case `brightWhite`: return colors.brightWhite;
+        case `bgBlack`: return msg.bgBlack;
+        case `bgRed`: return msg.bgRed;
+        case `bgGreen`: return msg.bgGreen;
+        case `bgYellow`: return msg.bgYellow;
+        case `bgBlue`: return msg.bgBlue;
+        case `bgMagenta`: return msg.bgMagenta;
+        case `bgCyan`: return msg.bgCyan;
+        case `bgWhite`: return msg.bgWhite;
+        case `bgGray`: return msg.bgGray;
+        case `bgGrey`: return msg.bgGrey;
+        case `bgBrightRed`: return msg.bgBrightRed;
+        case `bgBrightGreen`: return colors.bgBrightGreen(msg);
+        case `bgBrightYellow`: return msg.bgBrightYellow;
+        case `bgBrightBlue`: return msg.bgBrightBlue;
+        case `bgBrightMagenta`: return msg.bgBrightMagenta;
+        case `bgBrightCyan`: return msg.bgBrightCyan;
+        case `bgBrightWhite`: return msg.bgBrightWhite;
+       
+        default: return msg;
     }
 }
-startPrompt();
+
+
+//pretty console logs, less typing
+function logger(msg, color, bgColor) {
+    console.log(colors.bgCyan(bgColor));
+    if(bgColor) {
+        colors.setTheme({
+            custom: [color, bgColor]
+        })
+        console.log(msg.custom);
+    } else if (color){
+        let isbg = color;//
+      
+        //.slice(0, 1) == 'bg' ? findBGColor(msg, color) : findColor(msg, color);
+        
+        console.log(findColor(msg, color));
+    } else {
+       
+        console.log(msg);
+    }
+   
+}
+    startPrompt();
