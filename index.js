@@ -140,7 +140,7 @@ const createTableOfContents = (sections) => {
     sections.forEach(section => {
         let headingLink = section.heading.replaceAll(' ', "-");
         let sectionString = `${nl}[${section.heading}](#${headingLink})${nl}`;
-        console.log("sectionsString:", sectionString)//append section string to contents
+        //append section string to contents
         contents = `- ${contents}${sectionString}`
     })
     return contents;
@@ -242,7 +242,7 @@ const savePrompt = async data => {
     await inquirer.prompt(savePrompt).then(answer => {
         if (answer.save) {
             fs.writeFile(`README.md`, data, (err) => {
-                err ? console.error(err) : console.log(colors.green('README created!'));
+                err ? console.error(err) : logger('README created!', 'green');
 
                 logger('Bye bye!', 'bgCyan');
             })
