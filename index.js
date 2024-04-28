@@ -35,7 +35,7 @@ const questions = [
     {//  projectPrompt  
         type: `input`,
         name: `projectName`,
-        prefix: 'vas is das?',
+        //  prefix: 'vas is das?',
         message: `What's the name of your project?`,
         validate: validateInput,
         filter: filterInput,
@@ -152,7 +152,7 @@ const createTableOfContents = (sections) => {
 // pass section obj which contains the heading as a string and the content as an array of strings
 // return a string literal formatted into markup from section's values
 const formatSection = (section) => {
-    return `## ${section.heading}${nl}${section.content}${nl}`;
+    return `## ${section.heading}${nl}${section.content}${nl}${nl}`;
 }
 
 
@@ -191,22 +191,9 @@ async function startPrompt() {
         // using string literals, add the badge, project name, and contents to the beginning of markupString
         markupString = `${badge}${nl}${projectName}${nl}## Contents${nl}${contentsString}${nl}${markupString}`;
 
-        console.log(markupString);
-        logger(markupString, 'white', 'bgGrey')
-        logger(`Your raw README.md data is displayed above.${nl}Please review for a momment.`, `bgBrightGreen`);
-        let count = 0;
-        let counter = ``
-        /* setInterval(() => {
-             if (count < 6) {
-                 count++;
-                 counter = `${counter}.`
-                 process.stdout.write(counter)
-             } else {
-                 process.stdout.write('');
-                 return savePrompt(markupString);
-             }
-         }, 500)
- */
+        logger(markupString, 'bgGray')
+        logger(`Your raw README.md data is displayed above.  Please review for a momment.`, `bgGreen`);
+        setUpSavePromp(markupString);
 
     })
 
@@ -216,13 +203,39 @@ const foo = async evt => {
     // do something with evt
 }
 
+const setUpSavePromp = (data) => {
+    let count = 0;
+    let counter = `-Waiting`
+    let interval = setInterval(() => {
+        if (count < 30) {
+            count++;
+            counter = `${counter}#`
+            process.stdout.cursorTo(0);
+            process.stdout.write(counter)
+            process.stdout.cursorTo(0);
+        } else {
+            process.stdout.clearLine();
+            process.stdout.write('-Done!');
+            process.stdout.cursorTo(0);
+            clearInterval(interval);
+            return savePrompt(data);
+
+        }
+    }, 100);
+
+}
+
 const savePrompt = async data => {
 
     const savePrompt = {
         type: 'confirm',
         name: 'save',
         message: 'Is your read me ready to save?',
-        validate: validateInput,
+        validate: (input) => {
+            if (input.toLowerCase() != 'y' && input.toLowerCase() != 'n') {
+                return 'Enter y or n please';
+            } else return false(msg);
+        },
         filter: filterInput,
     };
 
@@ -230,72 +243,86 @@ const savePrompt = async data => {
         if (answer.save) {
             fs.writeFile(`README.md`, data, (err) => {
                 err ? console.error(err) : console.log(colors.green('README created!'));
+
+                logger('Bye bye!', 'bgCyan');
             })
+        } else {
+            handleNotReadyForSave(data)
         }
     });
 
 };
 
+const handleNotReadyForSave = async (data) => {
+    const restartPrompt = {
+        type: 'confirm',
+        name: 'restartPrompt',
+        message: 'Would you like to restart or exit?',
+        validate: validateInput,
+        filter: filterInput,
+    }
+
+    await inquirer.prompt(restartPrompt).then(answer => {
+        if (answer.restartPrompt) {
+            logger('Restarting your README', 'yellow');
+            startPrompt();
+        } else {
+            logger('Bye bye!', 'bgCyan');
+        }
+    })
+}
+
+
 function findColor(msg, color) {
     switch (color) {
-        case `black`: return colors.black;
-        case `red`: return colors.red;
-        case `green`: return colors.green;
-        case `yellow`: return colors.yellow;
-        case `blue`: return colors.blue;
-        case `magenta`: return colors.magenta;
-        case `cyan`: return colors.cyan;
-        case `white`: return colors.white;
-        case `gray`: return colors.gray;
-        case `grey`: return colors.grey;
-        case `brightRed`: return colors.brightRed;
+        case `black`: return colors.black(msg);
+        case `red`: return colors.red(msg);
+        case `green`: return colors.green(msg);
+        case `yellow`: return colors.yellow(msg);
+        case `blue`: return colors.blue(msg);
+        case `magenta`: return colors.magenta(msg);
+        case `cyan`: return colors.cyan(msg);
+        case `white`: return colors.white(msg);
+        case `gray`: return colors.gray(msg);
+        case `grey`: return colors.grey(msg);
+        case `brightRed`: return colors.brightRed(msg);
         case `brightGreen`: return colors.brightGreen(msg);
-        case `brightYellow`: return colors.brightYellow;
-        case `brightBlue`: return colors.brightBlue;
-        case `brightMagenta`: return colors.brightMagenta;
-        case `brightCyan`: return colors.brightCyan;
-        case `brightWhite`: return colors.brightWhite;
-        case `bgBlack`: return msg.bgBlack;
-        case `bgRed`: return msg.bgRed;
-        case `bgGreen`: return msg.bgGreen;
-        case `bgYellow`: return msg.bgYellow;
-        case `bgBlue`: return msg.bgBlue;
-        case `bgMagenta`: return msg.bgMagenta;
-        case `bgCyan`: return msg.bgCyan;
-        case `bgWhite`: return msg.bgWhite;
-        case `bgGray`: return msg.bgGray;
-        case `bgGrey`: return msg.bgGrey;
-        case `bgBrightRed`: return msg.bgBrightRed;
+        case `brightYellow`: return colors.brightYellow(msg);
+        case `brightBlue`: return colors.brightBlue(msg);
+        case `brightMagenta`: return colors.brightMagenta(msg);
+        case `brightCyan`: return colors.brightCyan(msg);
+        case `brightWhite`: return colors.brightWhite(msg);
+        case `bgBlack`: return colors.bgBlack(msg);
+        case `bgRed`: return colors.bgRed(msg);
+        case `bgGreen`: return colors.bgGreen(msg);
+        case `bgYellow`: return colors.bgYellow(msg);
+        case `bgBlue`: return colorsg.bgBlue(msg);
+        case `bgMagenta`: return colors.bgMagenta(msg);
+        case `bgCyan`: return colors.bgCyan(msg);
+        case `bgWhite`: return colors.bgWhite(msg);
+        case `bgGray`: return colors.bgGray(msg);
+        case `bgGrey`: return colors.bgGrey(msg);
+        case `bgBrightRed`: return colors.bgBrightRed(msg);
         case `bgBrightGreen`: return colors.bgBrightGreen(msg);
-        case `bgBrightYellow`: return msg.bgBrightYellow;
-        case `bgBrightBlue`: return msg.bgBrightBlue;
-        case `bgBrightMagenta`: return msg.bgBrightMagenta;
-        case `bgBrightCyan`: return msg.bgBrightCyan;
-        case `bgBrightWhite`: return msg.bgBrightWhite;
-       
+        case `bgBrightYellow`: return colors.bgBrightYellow(msg);
+        case `bgBrightBlue`: return colors.bgBrightBlue(msg);
+        case `bgBrightMagenta`: return colors.bgBrightMagenta(msg);
+        case `bgBrightCyan`: return colorsg.bgBrightCyan(msg);
+        case `bgBrightWhite`: return colors.bgBrightWhite(msg);
+
         default: return msg;
     }
 }
 
 
 //pretty console logs, less typing
-function logger(msg, color, bgColor) {
-    console.log(colors.bgCyan(bgColor));
-    if(bgColor) {
-        colors.setTheme({
-            custom: [color, bgColor]
-        })
-        console.log(msg.custom);
-    } else if (color){
-        let isbg = color;//
-      
-        //.slice(0, 1) == 'bg' ? findBGColor(msg, color) : findColor(msg, color);
-        
+function logger(msg, color) {
+
+    if (color) {
         console.log(findColor(msg, color));
     } else {
-       
         console.log(msg);
     }
-   
+
 }
-    startPrompt();
+startPrompt();
