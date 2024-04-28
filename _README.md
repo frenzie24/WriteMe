@@ -1,7 +1,8 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-# Frenzie Time
+# hel
 
-## Contents- - - - - - - - 
+## Contents
+- - - - - - - - 
 [DESCRIPTION](#DESCRIPTION)
 
 [INSTALLATION](#INSTALLATION)
@@ -19,27 +20,21 @@
 [QUESTIONS](#QUESTIONS)
 
 ## DESCRIPTION
-Frenzie Time aims to help people with hyper focus manage their time.
-
-User's will be able to break work time into segemented chunks with alarms and set reminders for the day in a single action.
+jasd
 ## INSTALLATION
-In your terminal run
-```
-npm init -y
-npm install
-```
+lkjasdfas
 ## USAGE
-asfgasghasgasdgsdg
+;lkajsdfgas
 ## LICENSE
-This project uses the apache license
+This project uses the MIT license
 ## CONTRIBUTING GUIDELINES
-contribution should be good
+pee fart in my butt
 ## TEST INSTRUCTIONS
 ```
-run me tests.png() rofl what
+console.log('lol kill me');
 ```
 ## GITHUB
-https://github.com/frenize24
+https://github.com/frenzie24
 ## QUESTIONS
 I can be reached by email:
 k@g.com
