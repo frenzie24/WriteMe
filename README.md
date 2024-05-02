@@ -1,5 +1,5 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-# Example For WriteMe
+# WriteMe
 
 ## Contents
 - - - - - - - - 
@@ -20,43 +20,41 @@
 [QUESTIONS](#QUESTIONS)
 
 ## DESCRIPTION
-This is an example for creating elegant and styled README.md
+WriteMe is a nodejs cli app to help create READMEs with styling and content applied
 
 ## INSTALLATION
-### here are some steps
+### Install Node.js
+- go to (node)[https://nodejs.org/en]
+- Download and install node.js
 
-- step 1 
-- step 2
-- step 3
-
+### Open a terminal
+- Navigate to (or open the terminal in) the root folder of this project
+- run npm install
 ```
- run some code()
+$ npm install 
 ```
 
 ## USAGE
-There are no usage instructions at this time
+WriteMe takes input through a series of prompts to create your README document.
 
-### But if there were
-
-- they
-- might 
-- look
-- like
-- this
+### Get Started
+- Open a terminal in the root folder of this project
+- run 
+```
+node index.js
+```
+- Follow the prompts to create your README.md
 
 ## LICENSE
 This project uses the MIT license
 
 ## CONTRIBUTING
-Please give me a 100/100!
-
-```
- i really need it
-```
+There are no contribution guidelines for this project.  
+If you would like to contribute feel freek to clone, branch, and push
 
 ## TESTS
 ```
-no tests for this application have been created
+No tests were written for WriteMe
 ```
 
 ## GITHUB
