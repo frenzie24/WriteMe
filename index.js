@@ -3,6 +3,12 @@
 const inquirer = require("inquirer");
 const colors = require("colors");
 const fs = require('fs');
+const { validateInput } = require("./validateInput");
+
+
+// nl  a string literal new line;
+const nl = `
+`;
 
 // Array of formatted badges 
 const badges = [`[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)`,
@@ -17,13 +23,11 @@ const badgeChoices = ['apache', 'boost', 'bsd3', 'bsd2', 'creative commons 0', '
 const editorWarn = `${colors.brightYellow(` (Choose save when exiting the editor for your content to transfer.) 
 `)}`
 
-// validateInput is used in every prompt
-const validateInput = (input) => {
-    if (!input.length) {
-        return 'Input required';
-    }
-    return true;
-}
+const formatMsg = `
+${"Styling".bold} ${"and".yellow} ${"formatting".underline}${" you apply in your editor will also carry over to your final README.".yellow}
+${"Currently you are writing content for a section ".red}${"(labeled with ".magenta}${"\#\# SECTION NAME".white}${")".magenta}
+${"H3 (###)".white}${" is the heading you should start with on to preserve stytling.".yellow}
+`
 
 // filterInput is used in every prompt
 const filterInput = (input) => {
@@ -35,37 +39,39 @@ const questions = [
     {//  projectPrompt  
         type: `input`,
         name: `projectName`,
-        //  prefix: 'vas is das?',
         message: `What's the name of your project?`,
         validate: validateInput,
         filter: filterInput,
     },
 
     {//  descriptionPrompt  
-        type: `input`,//,
+        type: `editor`,
         name: `description`,
-        message: `Please describle your project.`,
+        message: `Please describe your project.`,
         suffix: `${editorWarn}`,
+        prefix: `${formatMsg}`,
         validate: validateInput,
         filter: filterInput,
 
     },
 
     {//installPrompt  
-        type: 'input`,//',
+        type: `editor`,
         name: 'install',
         message: 'Please list any installation instructions.',
         suffix: `${editorWarn}`,
+        prefix: `${formatMsg}`,
         validate: validateInput,
         filter: filterInput,
 
     },
 
     {// usagePrompt  
-        type: 'input`,//',
+        type: `editor`,
         name: 'usage',
         message: `What is your projects intended usage?`,
         suffix: `${editorWarn}`,
+        prefix: `${formatMsg}`,
         validate: validateInput,
         filter: filterInput,
 
@@ -82,20 +88,22 @@ const questions = [
     },
 
     {// contributingPrompt  
-        type: 'input`,//',
+        type: `editor`,
         name: 'contributing',
         message: 'Please list contribution guidelines.',
         suffix: `${editorWarn}`,
+        prefix: `${formatMsg}`,
         validate: validateInput,
         filter: filterInput,
 
     },
 
     {// testPrompt  
-        type: `input`,//,
+        type: `editor`,
         name: `tests`,
         message: 'Please list any tests.',
         suffix: `${editorWarn}`,
+        prefix: `${formatMsg}`,
         validate: validateInput,
         filter: filterInput,
 
@@ -128,9 +136,6 @@ const questions = [
 ]
 
 
-// nl  a string literal new line;
-const nl = `
-`;
 
 //# endregion
 
@@ -164,7 +169,7 @@ async function startPrompt() {
         // we need a strink to hold our markup as it's formatted
         let markupString = '';
         // a dedicated variable for the markup to display the badge of the user's chosen license
-        const badge = badges[answers.license.indexOf(badgeChoices.find((choice) => choice == answers.license))];
+        const badge = badges[badgeChoices.indexOf(answers.license)];
         // we need to store our projectName, it is not formatted the same as sections and has no content
         const projectName = `# ${answers.projectName}${nl}`
         // an array of all section objs containing heading and their content
@@ -275,40 +280,40 @@ const handleNotReadyForSave = async (data) => {
 
 function findColor(msg, color) {
     switch (color) {
-        case `black`: return colors.black(msg);
-        case `red`: return colors.red(msg);
-        case `green`: return colors.green(msg);
-        case `yellow`: return colors.yellow(msg);
-        case `blue`: return colors.blue(msg);
-        case `magenta`: return colors.magenta(msg);
-        case `cyan`: return colors.cyan(msg);
-        case `white`: return colors.white(msg);
-        case `gray`: return colors.gray(msg);
-        case `grey`: return colors.grey(msg);
-        case `brightRed`: return colors.brightRed(msg);
+        case `black`: return colors.black;
+        case `red`: return colors.red;
+        case `green`: return colors.green;
+        case `yellow`: return colors.yellow;
+        case `blue`: return colors.blue;
+        case `magenta`: return colors.magenta;
+        case `cyan`: return colors.cyan;
+        case `white`: return colors.white;
+        case `gray`: return colors.gray;
+        case `grey`: return colors.grey;
+        case `brightRed`: return colors.brightRed;
         case `brightGreen`: return colors.brightGreen(msg);
-        case `brightYellow`: return colors.brightYellow(msg);
-        case `brightBlue`: return colors.brightBlue(msg);
-        case `brightMagenta`: return colors.brightMagenta(msg);
-        case `brightCyan`: return colors.brightCyan(msg);
-        case `brightWhite`: return colors.brightWhite(msg);
-        case `bgBlack`: return colors.bgBlack(msg);
-        case `bgRed`: return colors.bgRed(msg);
-        case `bgGreen`: return colors.bgGreen(msg);
-        case `bgYellow`: return colors.bgYellow(msg);
-        case `bgBlue`: return colorsg.bgBlue(msg);
-        case `bgMagenta`: return colors.bgMagenta(msg);
-        case `bgCyan`: return colors.bgCyan(msg);
-        case `bgWhite`: return colors.bgWhite(msg);
-        case `bgGray`: return colors.bgGray(msg);
-        case `bgGrey`: return colors.bgGrey(msg);
-        case `bgBrightRed`: return colors.bgBrightRed(msg);
+        case `brightYellow`: return colors.brightYellow;
+        case `brightBlue`: return colors.brightBlue;
+        case `brightMagenta`: return colors.brightMagenta;
+        case `brightCyan`: return colors.brightCyan;
+        case `brightWhite`: return colors.brightWhite;
+        case `bgBlack`: return msg.bgBlack;
+        case `bgRed`: return msg.bgRed;
+        case `bgGreen`: return msg.bgGreen;
+        case `bgYellow`: return msg.bgYellow;
+        case `bgBlue`: return msg.bgBlue;
+        case `bgMagenta`: return msg.bgMagenta;
+        case `bgCyan`: return msg.bgCyan;
+        case `bgWhite`: return msg.bgWhite;
+        case `bgGray`: return msg.bgGray;
+        case `bgGrey`: return msg.bgGrey;
+        case `bgBrightRed`: return msg.bgBrightRed;
         case `bgBrightGreen`: return colors.bgBrightGreen(msg);
-        case `bgBrightYellow`: return colors.bgBrightYellow(msg);
-        case `bgBrightBlue`: return colors.bgBrightBlue(msg);
-        case `bgBrightMagenta`: return colors.bgBrightMagenta(msg);
-        case `bgBrightCyan`: return colorsg.bgBrightCyan(msg);
-        case `bgBrightWhite`: return colors.bgBrightWhite(msg);
+        case `bgBrightYellow`: return msg.bgBrightYellow;
+        case `bgBrightBlue`: return msg.bgBrightBlue;
+        case `bgBrightMagenta`: return msg.bgBrightMagenta;
+        case `bgBrightCyan`: return msg.bgBrightCyan;
+        case `bgBrightWhite`: return msg.bgBrightWhite;
 
         default: return msg;
     }
@@ -325,4 +330,5 @@ function logger(msg, color) {
     }
 
 }
+
 startPrompt();

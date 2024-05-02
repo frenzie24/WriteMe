@@ -1,5 +1,5 @@
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-# adf
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Example For WriteMe
 
 ## Contents
 - - - - - - - - 
@@ -20,29 +20,49 @@
 [QUESTIONS](#QUESTIONS)
 
 ## DESCRIPTION
-asdf
+This is an example for creating elegant and styled README.md
 
 ## INSTALLATION
-asd
+### here are some steps
+
+- step 1 
+- step 2
+- step 3
+
+```
+ run some code()
+```
 
 ## USAGE
-fasd
+There are no usage instructions at this time
+
+### But if there were
+
+- they
+- might 
+- look
+- like
+- this
 
 ## LICENSE
-This project uses the apache license
+This project uses the MIT license
 
 ## CONTRIBUTING
-asd
+Please give me a 100/100!
+
+```
+ i really need it
+```
 
 ## TESTS
 ```
-fasd
+no tests for this application have been created
 ```
 
 ## GITHUB
-https://github.com/f
+https://github.com/frenzie24
 
 ## QUESTIONS
 I can be reached by email:
-asdfasdfasdfas@slaijadf.co
+kevincharlesgross@gmail.com
 
